@@ -3,16 +3,21 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
+  //Punto de entrada
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
+    publicPath: '/'
   },
   resolve: {
     extensions: ['.js', '.jsx'],
   },
+
+  //Modulos que definen las reglas de optimización mediante loaders
   module: {
     rules: [
+      //Optimización de JavaScript
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -20,6 +25,7 @@ module.exports = {
           loader: 'babel-loader',
         },
       },
+      //Optimización de Html
       {
         test: /\.html$/,
         use: [
@@ -28,6 +34,7 @@ module.exports = {
           },
         ],
       },
+      //Optimización CSS
       {
         test: /\.css$/,
         use: [
@@ -37,24 +44,32 @@ module.exports = {
           'css-loader',
         ],
       },
-      {
-        test: /\.scss$/,
-        loader: [MiniCSSExtractPlugin.loader, 'css-loader', 'sass-loader'],
-      },
     ],
   },
+
+  //Plugins para indicar las salidas
   plugins: [
+    //Html
     new HtmlWebpackPlugin({
       template: './public/index.html',
       filename: './index.html',
     }),
+
+    //Css
     new MiniCssExtractPlugin({
       filename: 'assets/[name].css',
     }),
   ],
+  //Servidor de salida de la App
   devServer: {
-    static: path.join(__dirname, 'dist'),
+    static: {
+      directory: path.resolve(__dirname, "dist"),
+    },
+    devMiddleware: {
+      index: 'index.html',
+    },
+    historyApiFallback: true,
     compress: true,
-    port: 3005,
+    port: 3000,
   },
 };
