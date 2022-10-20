@@ -10,6 +10,7 @@ module.exports = {
     filename: 'bundle.js',
     publicPath: '/'
   },
+  mode: 'development',
   resolve: {
     extensions: ['.js', '.jsx'],
   },
@@ -72,4 +73,10 @@ module.exports = {
     compress: true,
     port: 3000,
   },
+  //Salida al entrypoint size limits
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
+}
 };
