@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from '../components/Layout'
+import Layout from '../components/Layout';
+import AppContext from '../context/AppContext';
+import useInitialState from '../hooks/useInitialState';
 
 import Home from "../containers/Home";
 import Checkout from "../containers/Checkout";
@@ -12,7 +14,9 @@ import NotFound from "../containers/NotFound";
 import '../styles/components/app.css';
 
 const App = () => {
+  const initialState = useInitialState();
   return (
+    <AppContext.Provider value={initialState}>
     <BrowserRouter>
     <Layout>
         <Routes>
@@ -24,7 +28,8 @@ const App = () => {
           <Route path='*' element={<NotFound />} />
         </Routes>
       </Layout>
-    </BrowserRouter>    
+    </BrowserRouter>   
+    </AppContext.Provider> 
   );
 };
 
