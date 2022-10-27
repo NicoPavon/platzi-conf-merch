@@ -1,24 +1,25 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
+require('dotenv').config();
+// const Dotenv = require('dotenv-webpack');
 
+/** @type {import('webpack').Configuration} */
 module.exports = {
-  //Punto de entrada
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/'
+    publicPath:'/'
   },
   mode: 'development',
   resolve: {
     extensions: ['.js', '.jsx'],
   },
-
-  //Modulos que definen las reglas de optimización mediante loaders
   module: {
     rules: [
-      //Optimización de JavaScript
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -26,7 +27,6 @@ module.exports = {
           loader: 'babel-loader',
         },
       },
-      //Optimización de Html
       {
         test: /\.html$/,
         use: [
@@ -35,48 +35,42 @@ module.exports = {
           },
         ],
       },
-      //Optimización CSS
       {
-        test: /\.css$/,
+        test: /\.(s*)css$/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
           },
           'css-loader',
+          'sass-loader',
         ],
       },
     ],
   },
-
-  //Plugins para indicar las salidas
   plugins: [
-    //Html
     new HtmlWebpackPlugin({
       template: './public/index.html',
       filename: './index.html',
     }),
-
-    //Css
     new MiniCssExtractPlugin({
       filename: 'assets/[name].css',
     }),
+    new CopyPlugin({
+      patterns: [
+        { from: 'public/manifest.json', to: '' },
+        { from: 'public/service-worker.js', to: '' },
+        { from: 'public/icon.png', to: 'assets' },
+      ],
+    }),
+    new webpack.DefinePlugin({
+      'process.env.PAYPAL_CLIENT_PP': JSON.stringify(process.env.PAYPAL_CLIENT_PP),
+      'process.env.GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.GOOGLE_MAPS_API_KEY),
+		}),
   ],
-  //Servidor de salida de la App
   devServer: {
-    static: {
-      directory: path.resolve(__dirname, "dist"),
-    },
-    devMiddleware: {
-      index: 'index.html',
-    },
+    allowedHosts: path.join(__dirname, 'dist'),
     historyApiFallback: true,
     compress: true,
-    port: 3000,
+    port: 3005,
   },
-  //Salida al entrypoint size limits
-  performance: {
-    hints: false,
-    maxEntrypointSize: 512000,
-    maxAssetSize: 512000,
-}
 };
