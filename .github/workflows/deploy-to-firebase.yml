@@ -12,9 +12,6 @@ jobs:
         run: npm install --force
       - name: Build
         run: npm run build
-        env: 
-          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
-          PAYPAL_CLIENT_PP: ${{ secrets.PAYPAL_CLIENT_PP }}
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
@@ -36,6 +33,5 @@ jobs:
         uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
-      - env:
+        env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
